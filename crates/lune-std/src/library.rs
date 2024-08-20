@@ -9,6 +9,7 @@ use mlua::prelude::*;
 #[rustfmt::skip]
 pub enum LuneStandardLibrary {
     #[cfg(feature = "datetime")] DateTime,
+    #[cfg(feature = "ffi")]      Ffi,
     #[cfg(feature = "fs")]       Fs,
     #[cfg(feature = "luau")]     Luau,
     #[cfg(feature = "net")]      Net,
@@ -27,6 +28,7 @@ impl LuneStandardLibrary {
     #[rustfmt::skip]
     pub const ALL: &'static [Self] = &[
         #[cfg(feature = "datetime")] Self::DateTime,
+        #[cfg(feature = "ffi")]      Self::Ffi,
         #[cfg(feature = "fs")]       Self::Fs,
         #[cfg(feature = "luau")]     Self::Luau,
         #[cfg(feature = "net")]      Self::Net,
@@ -47,6 +49,7 @@ impl LuneStandardLibrary {
     pub fn name(&self) -> &'static str {
         match self {
             #[cfg(feature = "datetime")] Self::DateTime => "datetime",
+            #[cfg(feature = "ffi")]      Self::Ffi      => "ffi",
             #[cfg(feature = "fs")]       Self::Fs       => "fs",
             #[cfg(feature = "luau")]     Self::Luau     => "luau",
             #[cfg(feature = "net")]      Self::Net      => "net",
@@ -73,6 +76,7 @@ impl LuneStandardLibrary {
     pub fn module<'lua>(&self, lua: &'lua Lua) -> LuaResult<LuaMultiValue<'lua>> {
         let res: LuaResult<LuaTable> = match self {
             #[cfg(feature = "datetime")] Self::DateTime => lune_std_datetime::module(lua),
+            #[cfg(feature = "ffi")]      Self::Ffi      => lune_std_ffi::module(lua),
             #[cfg(feature = "fs")]       Self::Fs       => lune_std_fs::module(lua),
             #[cfg(feature = "luau")]     Self::Luau     => lune_std_luau::module(lua),
             #[cfg(feature = "net")]      Self::Net      => lune_std_net::module(lua),
@@ -102,6 +106,7 @@ impl FromStr for LuneStandardLibrary {
         let low = s.trim().to_ascii_lowercase();
         Ok(match low.as_str() {
             #[cfg(feature = "datetime")] "datetime" => Self::DateTime,
+            #[cfg(feature = "ffi")]      "ffi"      => Self::Ffi,
             #[cfg(feature = "fs")]       "fs"       => Self::Fs,
             #[cfg(feature = "luau")]     "luau"     => Self::Luau,
             #[cfg(feature = "net")]      "net"      => Self::Net,
